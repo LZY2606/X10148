@@ -34,3 +34,8 @@ coverage/
 .vite/
 .turbo/
 *.tsbuildinfo
+
+# 本地运行实例数据（文件型持久化）
+data/
+blobs
+instance.zip
