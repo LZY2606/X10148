@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>策略例外登记站</title>
+<style>
+:root{--bg:#0f1420;--panel:#171e2e;--panel2:#1d2638;--line:#2a3550;--txt:#dfe6f5;--mut:#8b97b3;--acc:#5b8cff;--ok:#34c98f;--warn:#f5a623;--bad:#ff6b6b;--pur:#b78cff}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,"PingFang SC","Microsoft YaHei",Segoe UI,sans-serif;background:var(--bg);color:var(--txt);font-size:14px}
+header{padding:14px 22px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:16px;flex-wrap:wrap;background:linear-gradient(180deg,#141b2c,#0f1420)}
+header h1{font-size:18px;margin:0;letter-spacing:1px}
+.clockbar{margin-left:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.clockbar input{background:var(--panel2);border:1px solid var(--line);color:var(--txt);border-radius:6px;padding:5px 8px}
+nav{display:flex;gap:4px;padding:10px 18px 0;border-bottom:1px solid var(--line);flex-wrap:wrap;background:var(--panel)}
+nav button{background:transparent;border:1px solid transparent;border-bottom:none;color:var(--mut);padding:9px 14px;border-radius:8px 8px 0 0;cursor:pointer;font-size:14px}
+nav button.active{background:var(--bg);color:var(--txt);border-color:var(--line)}
+main{padding:18px 22px;max-width:1280px;margin:0 auto}
+.tab{display:none}.tab.active{display:block}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-bottom:14px}
+.card h2{font-size:15px;margin:0 0 10px}
+.card h3{font-size:13px;color:var(--mut);margin:14px 0 6px;text-transform:uppercase;letter-spacing:1px}
+.row{display:flex;gap:10px;flex-wrap:wrap}.row>*{flex:1;min-width:140px}
+label{display:block;font-size:12px;color:var(--mut);margin:6px 0 3px}
+input,textarea,select{width:100%;background:var(--panel2);border:1px solid var(--line);color:var(--txt);border-radius:6px;padding:7px 9px;font-family:inherit;font-size:13px}
+textarea{resize:vertical;font-family:ui-monospace,Menlo,monospace}
+button.act{background:var(--acc);color:#fff;border:none;border-radius:6px;padding:8px 14px;cursor:pointer;font-weight:600}
+button.sec{background:var(--panel2);color:var(--txt);border:1px solid var(--line);border-radius:6px;padding:7px 12px;cursor:pointer}
+button.danger{background:#3a2230;color:#ff9b9b;border:1px solid #5a2c3c}
+button:disabled{opacity:.45;cursor:not-allowed}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+th,td{border-bottom:1px solid var(--line);padding:7px 8px;text-align:left;vertical-align:top}
+th{color:var(--mut);font-weight:600;white-space:nowrap}
+.tag{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11.5px;font-weight:600}
+.t-pending{background:#3a3520;color:var(--warn)}
+.t-scheduled{background:#2e2a45;color:var(--pur)}
+.t-active{background:#1d3a2e;color:var(--ok)}
+.t-expired{background:#33232a;color:#ff9aa8}
+.t-revoked{background:#3a2230;color:var(--bad)}
+.t-deny{background:#3a2230;color:var(--bad)}
+.t-allow{background:#1d3a2e;color:var(--ok)}
+.mono{font-family:ui-monospace,Menlo,monospace;font-size:12px}
+.muted{color:var(--mut)}.small{font-size:12px}
+.pill{font-size:11px;border:1px solid var(--line);border-radius:5px;padding:1px 6px;color:var(--mut)}
+.ok-text{color:var(--ok)}.bad-text{color:var(--bad)}.warn-text{color:var(--warn)}
+pre.box{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:10px;white-space:pre-wrap;word-break:break-all;font-size:12.5px;max-height:340px;overflow:auto}
+.toast{position:fixed;right:18px;bottom:18px;max-width:420px;z-index:99;display:flex;flex-direction:column;gap:8px}
+.toast div{padding:10px 14px;border-radius:8px;background:var(--panel2);border:1px solid var(--line)}
+.toast .err{border-color:#5a2c3c;background:#2a1a22}
+.toast .ok{border-color:#24503e}
+.clausebox{border:1px solid var(--line);border-radius:8px;padding:8px;margin:6px 0;background:var(--panel2)}
+.scroll{max-height:420px;overflow:auto}
+details summary{cursor:pointer;color:var(--acc)}
+a{color:var(--acc)}
+</style>
+</head>
+<body>
+<header>
+  <h1>🛡️ 策略例外登记站</h1>
+  <span class="pill" id="health">…</span>
+  <div class="clockbar">
+    <span class="small muted">观察时钟(UTC)</span>
+    <input id="simClock" style="width:230px" placeholder="留空=服务器当前 UTC"/>
+    <button class="sec" id="clockNow">取当前</button>
+    <button class="sec" id="clockReset">重置为实时</button>
+    <span class="small muted" id="realClock"></span>
+  </div>
+</header>
+<nav id="nav"></nav>
+<main id="main"></main>
+<div class="toast" id="toast"></div>
+<script src="/app.js"></script>
+</body>
+</html>
